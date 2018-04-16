@@ -8,6 +8,8 @@ import (
 	"image/jpeg"
 	"path"
 	"github.com/artyom/smartcrop"
+	"github.com/anthonynsimon/bild/adjust"
+	"github.com/anthonynsimon/bild/blend"
 )
 
 type SubImager interface {
@@ -88,4 +90,12 @@ func crop(img image.Image, width, height int) (image.Image, error) {
 	}
 	subImg := si.SubImage(rect)
 	return subImg, nil
+}
+
+func saturate(img image.Image) image.Image {
+	return adjust.Saturation(img, 0.5)
+}
+
+func multiply(img image.Image) image.Image {
+	return blend.Multiply(img, img)
 }
