@@ -1,6 +1,12 @@
 package main
 
-import "log"
+import (
+	"log"
+	"image"
+	"os"
+	"errors"
+	"image/jpeg"
+)
 
 func main() {
 	img, err := openImage("original.jpg")
@@ -22,8 +28,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	Fun with bild.
-		sat := saturate(img)
+
+	sat := saturate(img)
 	err = saveImage(sat, ".", "saturated.jpg")
 	if err != nil {
 		log.Fatal(err)
@@ -35,15 +41,19 @@ func main() {
 		log.Fatal(err)
 	}
 
-	shrp := sharpen(sat)
-	err = saveImage(shrp, ".", "sharpened.jpg")
+}
+
+func openImage(path string) (image.Image, error) {
+	imgFile, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.Wrap(err, "Cannot open "+path)
 	}
 
-	pri := primitivePicture(sat)
-	err = saveImage(pri, ".", "primitive.jpg")
+	img, err := jpeg.Decode(imgFile)
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.Wrap(err, "Decoding the image failed.")
 	}
+
+	return img, nil
 }
+
