@@ -7,7 +7,12 @@ import (
 	"errors"
 	"image/jpeg"
 	"path"
+	"github.com/artyom/smartcrop"
 )
+
+type SubImager interface {
+	SubImage(r image.Rectangle) image.Image
+}
 
 func main() {
 	img, err := openImage("original.jpg")
@@ -70,4 +75,17 @@ func saveImage(img image.Image, pname, fname string) error {
 		return errors.Wrap(err, "Failed to encode the image as JPEG")
 	}
 	return nil
+}
+
+func crop(img image.Image, width, height int) (image.Image, error) {
+	rect, err := smartcrop.Crop(img, width, height)
+	if err != nil {
+		return nil, errors.Wrap(err, "Smartcrop failed")
+	}
+	si, ok := (img).(SubImager)
+	if !ok {
+		return nil, errors.New("crop(): img does not support SubImage()")
+	}
+	subImg := si.SubImage(rect)
+	return subImg, nil
 }
