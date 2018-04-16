@@ -6,6 +6,7 @@ import (
 	"os"
 	"errors"
 	"image/jpeg"
+	"path"
 )
 
 func main() {
@@ -57,3 +58,16 @@ func openImage(path string) (image.Image, error) {
 	return img, nil
 }
 
+func saveImage(img image.Image, pname, fname string) error {
+	fpath := path.Join(pname, fname)
+
+	f, err := os.Create(fpath)
+	if err != nil {
+		return errors.Wrap(err, "Cannot create file: "+fpath)
+	}
+	err = jpeg.Encode(f, img, &jpeg.Options{Quality: 85})
+	if err != nil {
+		return errors.Wrap(err, "Failed to encode the image as JPEG")
+	}
+	return nil
+}
