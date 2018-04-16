@@ -10,6 +10,7 @@ import (
 	"github.com/artyom/smartcrop"
 	"github.com/anthonynsimon/bild/adjust"
 	"github.com/anthonynsimon/bild/blend"
+	"github.com/anthonynsimon/bild/effect"
 )
 
 type SubImager interface {
@@ -98,4 +99,8 @@ func saturate(img image.Image) image.Image {
 
 func multiply(img image.Image) image.Image {
 	return blend.Multiply(img, img)
+}
+
+func sharpen(img image.Image) image.Image {
+	return effect.UnsharpMask(img, 0.6, 1.2)
 }
